@@ -55,11 +55,25 @@ app.get("/users", (req, res) => {
   });
 });
 
+function findUserId(users) {
+  const idSet = new Set(users.map((i) => i.id));
+  let newId = (users.length + 1).toString();
+  if (idSet.has(newId)) {
+    for (let i = users.length; i >= 1; i -= 1) {
+      const stringId = i.toString();
+      if (!idSet.has(stringId)) {
+        newId = stringId;
+      }
+    }
+  }
+  return newId;
+}
+
 app.post("/users", (req, res) => {
   const { firstName, lastName, email, phone, username } = req.body;
   if (firstName && lastName && email && phone && username) {
     const newUser = {
-      id: (users.length + 1).toString(),
+      id: findUserId(users),
       firstName,
       lastName,
       email,
